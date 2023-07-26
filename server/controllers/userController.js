@@ -136,3 +136,43 @@ exports.update = (req,res) => {
         });
     });
 };
+
+exports.delete = (req,res) => {
+    pool.getConnection((err, connection)=>{
+        if(err){
+            throw err;
+        };
+        console.log('Connected as ID'+ connection.threadId);
+        connection.query('DELETE FROM user WHERE status="active" and id = ?',[req.params.id],(err,rows)=>{
+               connection.release();
+
+               if(!err){
+                res.redirect('/');
+               }else{
+                console.log(err);
+               }
+
+               console.log('The data from user table: \n', rows)
+        });
+    });
+};
+
+exports.viewAll = (req,res)=>{
+    pool.getConnection((err, connection)=>{
+        if(err){
+            throw err;
+        };
+        console.log('Connected as ID'+ connection.threadId);
+        connection.query('SELECT * FROM user WHERE status="active" and id= ?',[req.params.id],(err,rows)=>{
+               connection.release();
+
+               if(!err){
+                res.render('view-user',{rows});
+               }else{
+                console.log(err);
+               }
+
+               console.log('The data from user table: \n', rows)
+        });
+    });
+};

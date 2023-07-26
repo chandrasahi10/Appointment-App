@@ -30,5 +30,23 @@ exports.view = (req,res)=>{
 };
 
 exports.find = (req,res) => {
-    
-}
+    pool.getConnection((err, connection)=>{
+        if(err){
+            throw err;
+        };
+        console.log('Connected as ID'+ connection.threadId);
+
+        let searchTerm =  req.body.search;
+        connection.query('SELECT * FROM user WHERE status="active" and first_name like ? or last_name like ?',['%'+searchTerm+'%','%'+searchTerm+'%'],(err,rows)=>{
+               connection.release();
+
+               if(!err){
+                res.render('home',{rows});
+               }else{
+                console.log(err);
+               }
+
+               console.log('The data from user table: \n', rows)
+        });
+    });
+};

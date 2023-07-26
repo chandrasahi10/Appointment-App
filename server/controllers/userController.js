@@ -50,3 +50,23 @@ exports.find = (req,res) => {
         });
     });
 };
+
+exports.form = (req,res) => {
+    pool.getConnection((err, connection)=>{
+        if(err){
+            throw err;
+        };
+        console.log('Connected as ID'+ connection.threadId);
+        connection.query((err,rows)=>{
+               connection.release();
+
+               if(!err){
+                res.render('add-user',{rows});
+               }else{
+                console.log(err);
+               }
+
+               console.log('The data from user table: \n', rows)
+        });
+    });
+};
